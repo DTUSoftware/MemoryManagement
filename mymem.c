@@ -202,6 +202,7 @@ void *BestFit(size_t requested) {
     // returns the ptr we're looking for
     return memoryListPtr;
 }
+
 // finds the worst available block
 void *WorstFit(size_t requested) {
     // starts the traverse through the linked list at the head
@@ -256,12 +257,67 @@ void *NextFit(size_t requested) {
 
 /* Frees a block of memory previously allocated by mymalloc. */
 void myfree(void *block) {
-    return;
+    // node to search through the block
+    struct memoryList *searcher = head;
+    // traverses through the list until the block is found
+    while (searcher) {
+        // checks if the searchar is the block and then breaks
+        if (searcher->ptr == block) break;
+
+        // set's the searcher to the next to traverse
+        searcher = searcher->next;
+    }
+
+    // unallocates the searcher
+    searcher->alloc = 0;
+
+    // checks if the next is unallocated to combine with the current one
+    if ((searcher->next->alloc != 1) && (searcher->next != head)) {
+        // makes a next struct to be ready for merch later
+        struct memoryList *afterSearcher = searcher->next;
+        // sets the next pointer to the afterSearcher next
+        searcher->next = afterSearcher->next;
+        // makes sure that the one after searcher refers to searcher on the last.
+        searcher->next->last = searcher;
+        // adds the sizes together
+        searcher->size += afterSearcher->size;
+
+        // if head or tail is aftersearcher they are now pointing at searcher
+        if (afterSearcher == head) {
+            head = searcher;
+        }
+        if (afterSearcher == next) {
+            next = searcher;
+        }
+        // frees the afterSearcher
+        free(afterSearcher);
+    }
+    // checks if the previous is unallocated to combine with the current one
+    if ((searcher->last->alloc != 1) && (searcher->last != head)) {
+        // makes a next struct to be ready for merch later
+        struct memoryList *beforeSearcher = searcher->last;
+        // sets the before next  pointer to the searcher next pointer
+        beforeSearcher->next = searcher->next;
+        // makes sure that the one after beforeSearcher refers to searcher on the last.
+        beforeSearcher->next->last = beforeSearcher;
+        // adds the sizes together
+        beforeSearcher->size += searcher->size;
+
+        // if head or tail is searcher they are now pointing at searcher
+        if (searcher == head) {
+            head = beforeSearcher;
+        }
+        if (searcher == next) {
+            next = beforeSearcher;
+        }
+        // frees the Searcher
+        free(searcher);
+    }
 }
 
 /****** Memory status/property functions ******
  * Implement these functions.
- * Note that when refered to "memory" here, it is meant that the 
+ * Note that when referred to "memory" here, it is meant that the
  * memory pool this module manages via initmem/mymalloc/myfree. 
  */
 

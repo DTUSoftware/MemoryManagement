@@ -64,9 +64,13 @@ void initmem(strategies strategy, size_t sz) {
     // head->next and head-> last is set to head to make sure we have a circular linked list
     head->next = head;
     head->last = head;
+    // size is set to the size of the initialized memory sz
     head->size = sz;
+    // makes sure that the head is not allocated
     head->alloc = 0;
+    // makes sure that head points to the start of the memory pointer
     head->ptr = myMemory;
+    // sets the next pointer to the head as a initialization
     next = head;
 
 }
@@ -79,7 +83,9 @@ void initmem(strategies strategy, size_t sz) {
 
 void *mymalloc(size_t requested) {
     assert((int) myStrategy > 0);
+    // initializes block that is where the fits are allocated to.
     struct memoryList *block = NULL;
+    // chooses which of the strategies used, where block gets the values of the node from the linked list
     switch (myStrategy) {
         case NotSet:
             return NULL;
@@ -98,88 +104,153 @@ void *mymalloc(size_t requested) {
         default:
             return NULL;
     }
+    // should never get here, but just in case something went horribly wrong
     if (block == NULL) {
-        printf("Something horrible has happened (╯‵□′)╯︵┻━┻");
+        printf("Something horrible has happened (╯‵□′)╯︵┻━┻\n");
         return NULL;
     }
-
+    // marks the block as allocated
+    block->size = 1;
+    // if the block size and the requested size maches we just move the next pointer, since there's no remaining
+    // memory in that fit
     if (block->size == requested) {
+        // moves the next pointer
         next = block->next;
+
+        // handles the remaining memory / creates a new space for the remaining memory where the left memory is right after
+        // the block we made before
     } else if (block->size > requested) {
+        // initializes the ledt/ remaining memory block
         struct memoryList *left = malloc(sizeof(struct memoryList));
+        // moves the last pointer of the remainder to the previous block
         left->last = block;
+        // moves the next pointer from left to what the pointer pointed at
         left->next = block->next;
+        // makes sure that the block after left points to left and not the block before left
         left->next->last = left;
+        // makes the block go to what's left after the block
         block->next = left;
-
-        left->size = block->size -requested;
-
+        // sets the size of the left block to what was left after the block took what it needed
+        left->size = block->size - requested;
+        // sets the block size to the requested memory
+        block->size = requested;
+        // marks the left as unallocated
+        left->alloc = 0;
+        // lets the left pointer to the end of the blocks ptr
+        left->ptr = block->ptr + requested;
+        // sets the next value to left
+        next = left;
     }
-
+        // should never run this but just in case.
+    else {
+        printf("something went horribly wrong again sadge ┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻\n");
+        return NULL;
+    }
+    // returns the pointer to the just attached block.
     return block->ptr;
 }
 
+// finds the first available block
 void *FirstFit(size_t requested) {
+    // starts the traverse through the linked list at the head
     struct memoryList *current = head;
+    // the pointer to the node that we're trying to find initialized as NULL
     struct memoryList *memoryListPtr = NULL;
+    // only runs if the memory pointer is not found and there still is a current to find
     while (memoryListPtr == NULL && current) {
+        // checks if there's avaivable space for the current node, and that the block is not allocated
         if (current->size >= requested && current->alloc == 0) {
-            current->alloc = 1;
+            // allocated the block
+            // sets the memorypointer to the current
             memoryListPtr = current;
         }
+        // amikes the current the next to traverse through the llinkedlist
         current = current->next;
+        // if head is reached we break
         if (current == head) break;
     }
+    // returns the ptr we're looking for
     return memoryListPtr;
 }
 
+// finds the best available block
 void *BestFit(size_t requested) {
+    // starts the traverse through the linked list at the head
     struct memoryList *current = head;
+    // the pointer to the node that we're trying to find initialized as NULL
     struct memoryList *memoryListPtr = NULL;
+    // set's the starting remainder as the max value for an integer to make sure the first fit found is stored
     int remaining = INT_MAX;
+    // loop to travers through the linked list
     while (current) {
+        // checks if the memory block is big enough and is allocated
         if (current->size >= requested && current->alloc == 0) {
+            // if the size is smaller than the previous remaining size it's a better fit and should now be stored
+            // instead
             if ((current->size - requested) < remaining) {
+                // calculates the new remainding to check for
                 remaining = current->size - requested;
-                current->alloc = 1;
+                // set's the pointer to the current
                 memoryListPtr = current;
             }
         }
+        // sets the current to the next to traverse through the linked list
         current = current->next;
+        // breaks if the head is reached.
         if (current == head) break;
     }
+    // returns the ptr we're looking for
     return memoryListPtr;
 }
-
+// finds the worst available block
 void *WorstFit(size_t requested) {
+    // starts the traverse through the linked list at the head
     struct memoryList *current = head;
+    // the pointer to the node that we're trying to find initialized as NULL
     struct memoryList *memoryListPtr = NULL;
+    // sets the remaining to 0 to make sure that the the first fit found is automatically the worst
     int remaining = 0;
+    // loops through the list
     while (current) {
+        // checks if the memory block is big enough and is allocated
         if (current->size >= requested && current->alloc == 0) {
+            // checks that if the current memory block is thw worst fit
             if ((current->size - requested) > remaining) {
+                // calculates the new remaining
                 remaining = current->size - requested;
-                current->alloc = 1;
+                // sets the new memmoryListPtr
                 memoryListPtr = current;
             }
         }
+        // sets the current to the next to traverse through the linked list
         current = current->next;
+        // breaks if the head is reached.
         if (current == head) break;
     }
+    // returns the ptr we're looking for
     return memoryListPtr;
 }
 
+// finds the next fit
 void *NextFit(size_t requested) {
+    // set's the current to next since it's a next fit
     struct memoryList *current = next;
+    // the pointer to the node that we're trying to find initialized as NULL
     struct memoryList *memoryListPtr = NULL;
+    // only runs if the memory pointer is not found and there still is a current to find
     while (memoryListPtr == NULL && current) {
+        // checks if there's avaivable space for the current node, and that the block is not allocated
         if (current->size >= requested && current->alloc == 0) {
-            current->alloc = 1;
+            // allocated the block
+            // sets the memorypointer to the current
             memoryListPtr = current;
         }
+        // amikes the current the next to traverse through the llinkedlist
         current = current->next;
+        // breaks if next is reached.
         if (current == next) break;
     }
+    // returns the ptr we're looking for
     return memoryListPtr;
 }
 

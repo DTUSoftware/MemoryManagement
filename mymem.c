@@ -347,7 +347,7 @@ int mem_holes() {
 int mem_allocated() {
     // initialises the counter
     int allocated = 0;
-
+    // the good old searcher node
     struct memoryList *searcher = head;
     // searches thorugh the linked list
     while (searcher) {
@@ -372,7 +372,22 @@ int mem_free() {
 
 /* Number of bytes in the largest contiguous area of unallocated memory */
 int mem_largest_free() {
-    return 0;
+    // int to store the largest area of unallocated memory
+    int largest = 0;
+    // the good old searcher node
+    struct memoryList *searcher = head;
+    // good old loop through the linked list
+    while (searcher) {
+        if ((searcher->alloc == 0) && searcher->size > largest) largest = searcher->size;
+
+        // moves the searcher forward
+        searcher = searcher->next;
+
+        // breaks if searcher finds the head because circular linked list and stuff
+        if (searcher == head) break;
+    }
+    // returns the largest
+    return largest;
 }
 
 /* Number of free blocks smaller than or equals to "size" bytes. */

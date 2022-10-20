@@ -323,7 +323,24 @@ void myfree(void *block) {
 
 /* Get the number of contiguous areas of free space in memory. */
 int mem_holes() {
-    return 0;
+    // initializes a counter
+    int counter = 0;
+    // makes a searcher node
+    struct memoryList *searcher = head;
+    // searches thorugh the linked list
+    while (searcher) {
+        // if a black of memory is not allocated and the next space is (if it wasn't nothing would be allocate) and
+        // then counts upwards
+        if (searcher->alloc == 0 && searcher->next->alloc == 1) counter++;
+
+        // moves the searcher forward
+        searcher = searcher->next;
+
+        // breaks if searcher finds the head because circular linked list and stuff
+        if (searcher==head) break;
+    }
+    // returns the memory holes
+    return counter;
 }
 
 /* Get the number of bytes allocated */

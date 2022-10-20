@@ -414,8 +414,24 @@ int mem_small_free(int size) {
 }
 
 char mem_is_alloc(void *ptr) {
+    char allocated = 0;
+    // the good old searcher node
+    struct memoryList *searcher = head;
+    // searches thorugh the linked list
+    while (searcher) {
+        // check if the pointer greater than the searcher pointer and if the pointer + the size is then greater, than
+        // the adress of the byte looking for
+        if (searcher->alloc == 1 && (searcher->ptr <= ptr) && (ptr <= (searcher->size + searcher->ptr))) {
+            allocated = 1;
+            break;
+        }
+        // moves the searcher forward
+        searcher = searcher->next;
+        // breaks if searcher finds the head because circular linked list and stuff
+        if (searcher == head) break;
+    }
 
-    return 0;
+    return allocated;
 }
 
 /* 
@@ -474,7 +490,14 @@ strategies strategyFromString(char *strategy) {
 
 /* Use this function to print out the current contents of memory. */
 void print_memory() {
-    return;
+    struct memoryList *searcher = head;
+    while (searcher) {
+
+        printf("%p %c %i", searcher->ptr, searcher->alloc, searcher->size);
+        searcher = searcher->next;
+
+        if (searcher == head) break;
+    }
 }
 
 /* Use this function to track memory allocation performance.  

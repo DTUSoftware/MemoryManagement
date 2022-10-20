@@ -5,6 +5,7 @@
 #include "mymem.h"
 #include <time.h>
 #include <stdbool.h>
+#include <limits.h>
 
 
 /* The main structure for implementing memory allocation.

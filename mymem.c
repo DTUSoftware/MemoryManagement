@@ -392,10 +392,29 @@ int mem_largest_free() {
 
 /* Number of free blocks smaller than or equals to "size" bytes. */
 int mem_small_free(int size) {
-    return 0;
+    // initializes a counter
+    int counter = 0;
+    // makes a searcher node
+    struct memoryList *searcher = head;
+    // searches thorugh the linked list
+    while (searcher) {
+        // if a black of memory is not allocated and the next space is, and the size is smaller than or equals
+        // (if it wasn't nothing would be allocate) and
+        // then counts upwards
+        if ((searcher->alloc == 0) && (searcher->next->alloc == 1) && searcher->size <= size) counter++;
+
+        // moves the searcher forward
+        searcher = searcher->next;
+
+        // breaks if searcher finds the head because circular linked list and stuff
+        if (searcher == head) break;
+    }
+    // returns the memory holes
+    return counter;
 }
 
 char mem_is_alloc(void *ptr) {
+
     return 0;
 }
 

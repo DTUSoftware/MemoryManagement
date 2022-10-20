@@ -118,7 +118,6 @@ void *BestFit(size_t requested) {
                 current->alloc = 1;
                 memoryListPtr = current;
             }
-
         }
         current = current->next;
     }
@@ -126,7 +125,20 @@ void *BestFit(size_t requested) {
 }
 
 void *WorstFit(size_t requested) {
-    return NULL;
+    struct memoryList *current = head;
+    struct memoryList *memoryListPtr = NULL;
+    int remaining = 0;
+    while (current) {
+        if (current->size >= requested && current->alloc == 0) {
+            if ((current->size - requested) > remaining){
+                remaining = current->size - requested;
+                current->alloc = 1;
+                memoryListPtr = current;
+            }
+        }
+        current = current->next;
+    }
+    return memoryListPtr;
 }
 
 void *NextFit(size_t requested) {

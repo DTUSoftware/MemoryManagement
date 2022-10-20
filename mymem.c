@@ -337,7 +337,7 @@ int mem_holes() {
         searcher = searcher->next;
 
         // breaks if searcher finds the head because circular linked list and stuff
-        if (searcher==head) break;
+        if (searcher == head) break;
     }
     // returns the memory holes
     return counter;
@@ -345,12 +345,29 @@ int mem_holes() {
 
 /* Get the number of bytes allocated */
 int mem_allocated() {
-    return 0;
+    // initialises the counter
+    int allocated = 0;
+
+    struct memoryList *searcher = head;
+    // searches thorugh the linked list
+    while (searcher) {
+        // if memory is allocated adds it to the allocated sum
+        if (searcher->alloc == 1) allocated += searcher->size;
+
+        // moves the searcher forward
+        searcher = searcher->next;
+
+        // breaks if searcher finds the head because circular linked list and stuff
+        if (searcher == head) break;
+    }
+    // returns how much is allocated
+    return allocated;
 }
 
 /* Number of non-allocated bytes */
 int mem_free() {
-    return 0;
+    // because mem total is given this is trivial because at this point i am lazy.
+    return mem_total() - mem_allocated();
 }
 
 /* Number of bytes in the largest contiguous area of unallocated memory */

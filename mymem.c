@@ -61,12 +61,13 @@ void initmem(strategies strategy, size_t sz) {
 
     /* TODO: Initialize memory management structure. */
     head = (struct memoryList *) malloc(sizeof(struct memoryList));
-    head->next = NULL;
-    head->last = NULL;
+    // head->next and head-> last is set to head to make sure we have a circular linked list
+    head->next = head;
+    head->last = head;
     head->size = sz;
     head->alloc = 0;
     head->ptr = myMemory;
-
+    next = head;
 
 }
 
@@ -78,20 +79,44 @@ void initmem(strategies strategy, size_t sz) {
 
 void *mymalloc(size_t requested) {
     assert((int) myStrategy > 0);
-
+    struct memoryList *block = NULL;
     switch (myStrategy) {
         case NotSet:
             return NULL;
         case First:
-            return FirstFit(requested);
+            block = FirstFit(requested);
+            break;
         case Best:
-            return BestFit(requested);
+            block = BestFit(requested);
+            break;
         case Worst:
-            return WorstFit(requested);
+            block = WorstFit(requested);
+            break;
         case Next:
-            return NextFit(requested);
+            block = NextFit(requested);
+            break;
+        default:
+            return NULL;
     }
-    return NULL;
+    if (block == NULL) {
+        printf("Something horrible has happened (╯‵□′)╯︵┻━┻");
+        return NULL;
+    }
+
+    if (block->size == requested) {
+        next = block->next;
+    } else if (block->size > requested) {
+        struct memoryList *left = malloc(sizeof(struct memoryList));
+        left->last = block;
+        left->next = block->next;
+        left->next->last = left;
+        block->next = left;
+
+        left->size = block->size -requested;
+
+    }
+
+    return block->ptr;
 }
 
 void *FirstFit(size_t requested) {
@@ -103,6 +128,7 @@ void *FirstFit(size_t requested) {
             memoryListPtr = current;
         }
         current = current->next;
+        if (current == head) break;
     }
     return memoryListPtr;
 }
@@ -113,13 +139,14 @@ void *BestFit(size_t requested) {
     int remaining = INT_MAX;
     while (current) {
         if (current->size >= requested && current->alloc == 0) {
-            if ((current->size - requested) < remaining){
+            if ((current->size - requested) < remaining) {
                 remaining = current->size - requested;
                 current->alloc = 1;
                 memoryListPtr = current;
             }
         }
         current = current->next;
+        if (current == head) break;
     }
     return memoryListPtr;
 }
@@ -130,22 +157,30 @@ void *WorstFit(size_t requested) {
     int remaining = 0;
     while (current) {
         if (current->size >= requested && current->alloc == 0) {
-            if ((current->size - requested) > remaining){
+            if ((current->size - requested) > remaining) {
                 remaining = current->size - requested;
                 current->alloc = 1;
                 memoryListPtr = current;
             }
         }
         current = current->next;
+        if (current == head) break;
     }
     return memoryListPtr;
 }
 
 void *NextFit(size_t requested) {
-    struct memoryList *current = head;
+    struct memoryList *current = next;
     struct memoryList *memoryListPtr = NULL;
-
-    return NULL;
+    while (memoryListPtr == NULL && current) {
+        if (current->size >= requested && current->alloc == 0) {
+            current->alloc = 1;
+            memoryListPtr = current;
+        }
+        current = current->next;
+        if (current == next) break;
+    }
+    return memoryListPtr;
 }
 
 /* Frees a block of memory previously allocated by mymalloc. */

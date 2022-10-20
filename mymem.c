@@ -142,6 +142,9 @@ void *WorstFit(size_t requested) {
 }
 
 void *NextFit(size_t requested) {
+    struct memoryList *current = head;
+    struct memoryList *memoryListPtr = NULL;
+
     return NULL;
 }
 

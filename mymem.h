@@ -28,3 +28,7 @@ void* mem_pool();
 void print_memory();
 void print_memory_status();
 void try_mymem(int argc, char **argv);
+void *FirstFit(size_t requested);
+void *BestFit(size_t requested);
+void *WorstFit(size_t requested);
+void *NextFit(size_t requested);

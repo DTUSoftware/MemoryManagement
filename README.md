@@ -112,7 +112,17 @@ Answer the following questions as part of your report.
 
 3) **Name one advantage of each strategy.**
 
-   ANSWER
+   ***First-fit***:  
+   ADVANTAGE
+
+   ***Best-fit***:  
+   ADVANTAGE
+
+   ***Worst-fit***:  
+   ADVANTAGE
+
+   ***Next-fit***:  
+   ADVANTAGE
 
 4) Run the stress test on all strategies, and look at the results (tests.out).
 

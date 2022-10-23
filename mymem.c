@@ -124,7 +124,9 @@ void *mymalloc(size_t requested) {
     }
     // If the strategy could not find any available block for the requested size
     if (block == NULL) {
-        printf("Requested block not available!\n");
+        if (debug) {
+            printf("Requested block not available!\n");
+        }
         return NULL;
     }
 

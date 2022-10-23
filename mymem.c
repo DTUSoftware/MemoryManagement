@@ -31,6 +31,8 @@ void *myMemory = NULL;
 static struct memoryList *head;
 static struct memoryList *next;
 
+bool debug = true;
+
 
 /* initmem must be called prior to mymalloc and myfree.
 
@@ -51,6 +53,11 @@ void initmem(strategies strategy, size_t sz) {
 
     /* all implementations will need an actual block of memory to use */
     mySize = sz;
+
+    if (debug) {
+        printf("\n================================================\n");
+        printf("Initializing memory using strategy %s with size %zu\n\n", strategy_name(myStrategy), mySize);
+    }
 
     if (myMemory != NULL) free(myMemory); /* in case this is not the first time initmem2 is called */
 
@@ -73,6 +80,12 @@ void initmem(strategies strategy, size_t sz) {
     // sets the next pointer to the head as a initialization
     next = head;
 
+    if (debug) {
+        printf("Done initializing!\n\n");
+        print_memory();
+        print_memory_status();
+        printf("================================================\n\n");
+    }
 }
 
 /* Allocate a block of memory with the requested size.
@@ -83,6 +96,11 @@ void initmem(strategies strategy, size_t sz) {
 
 void *mymalloc(size_t requested) {
     assert((int) myStrategy > 0);
+    if (debug) {
+        printf("\n================================================\n");
+        printf("Allocating %zu bytes of memory using strategy %s...\n\n", requested, strategy_name(myStrategy));
+    }
+
     // initializes block that is where the fits are allocated to.
     struct memoryList *block = NULL;
     // chooses which of the strategies used, where block gets the values of the node from the linked list
@@ -141,12 +159,19 @@ void *mymalloc(size_t requested) {
         left->ptr = block->ptr + requested;
         // sets the next value to left
         next = left;
-    }
-        // should never run this but just in case.
+    } // should never run this but just in case.
     else {
         printf("something went horribly wrong again sadge ┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻\n");
         return NULL;
     }
+
+    if (debug) {
+        printf("Done allocating.\n\n");
+        print_memory();
+        print_memory_status();
+        printf("================================================\n\n");
+    }
+
     // returns the pointer to the just attached block.
     return block->ptr;
 }
@@ -258,6 +283,10 @@ void *NextFit(size_t requested) {
 
 /* Frees a block of memory previously allocated by mymalloc. */
 void myfree(void *block) {
+    if (debug) {
+        printf("\n================================================\n");
+        printf("Trying to free block of memory at %p...\n\n", block);
+    }
     // node to search through the block
     struct memoryList *searcher = head;
     // traverses through the list until the block is found
@@ -267,6 +296,12 @@ void myfree(void *block) {
 
         // set's the searcher to the next to traverse
         searcher = searcher->next;
+
+        // return if we get back to head
+        if (searcher == head) {
+            printf("Block is not in memory!\n");
+            return;
+        }
     }
 
     // unallocates the searcher
@@ -313,6 +348,13 @@ void myfree(void *block) {
         }
         // frees the Searcher
         free(searcher);
+    }
+
+    if (debug) {
+        printf("Done freeing.\n\n");
+        print_memory();
+        print_memory_status();
+        printf("================================================\n\n");
     }
 }
 
@@ -399,7 +441,7 @@ int mem_small_free(int size) {
     struct memoryList *searcher = head;
     // searches thorugh the linked list
     while (searcher) {
-        // if a black of memory is not allocated and the next space is, and the size is smaller than or equals
+        // if a block of memory is not allocated and the next space is, and the size is smaller than or equals
         // (if it wasn't nothing would be allocate) and
         // then counts upwards
         if ((searcher->alloc == 0) && (searcher->next->alloc == 1) && searcher->size <= size) counter++;
@@ -493,8 +535,8 @@ strategies strategyFromString(char *strategy) {
 void print_memory() {
     struct memoryList *searcher = head;
     while (searcher) {
-
-        printf("%p %c %i", searcher->ptr, searcher->alloc, searcher->size);
+        char* allocated = searcher->alloc ? "true " : "false";
+        printf("[%p] Allocated: %s | Size: %i\n", searcher->ptr, allocated, searcher->size);
         searcher = searcher->next;
 
         if (searcher == head) break;
@@ -527,18 +569,31 @@ void try_mymem(int argc, char **argv) {
 
     /* A simple example.
        Each algorithm should produce a different layout. */
-
+    printf("===== Initmem =====\n");
     initmem(strat, 500);
 
+    printf("===== Allocation and Free =====\n");
+    printf("Allocate 100 -> a\n");
     a = mymalloc(100);
+
+    printf("Allocate 100 -> b\n");
     b = mymalloc(100);
+
+    printf("Allocate 100 -> c\n");
     c = mymalloc(100);
+
+    printf("Free b\n");
     myfree(b);
+
+    printf("Allocate 50 -> d\n");
     d = mymalloc(50);
+
+    printf("Free a\n");
     myfree(a);
+
+    printf("Allocate 25 -> e\n");
     e = mymalloc(25);
 
     print_memory();
     print_memory_status();
-
 }

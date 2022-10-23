@@ -2,6 +2,7 @@
 mymem
 mymem.exe
 mem
+*.stackdump
 
 # IDE
 .vscode/

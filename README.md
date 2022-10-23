@@ -9,14 +9,14 @@ You will be implementing a memory manager for a block of memory.
 You will implement routines for allocating and deallocating memory, and keeping track of what memory is in use.
 You will implement the following four strategies for selecting in which block to place a new requested memory block:
 
-1) First-fit:
-   select the first suitable block with the smallest address.
-2) Best-fit:
-   select the smallest suitable block.
-3) Worst-fit:
-   select the largest suitable block.
-4) Next-fit:
-   select the first suitable block after the last block allocated (with wraparound from end to beginning).
+1) **First-fit**:
+   Select the first suitable block with the smallest address.
+2) **Best-fit**:
+   Select the smallest suitable block.
+3) **Worst-fit**:
+   Select the largest suitable block.
+4) **Next-fit**:
+   Select the first suitable block after the last block allocated (with wraparound from end to beginning).
 
 Here, "suitable" means "free, and large enough to fit the new data".
 

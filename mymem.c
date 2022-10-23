@@ -31,7 +31,7 @@ void *myMemory = NULL;
 static struct memoryList *head;
 static struct memoryList *next;
 
-bool debug = true;
+bool debug = false;
 
 
 /* initmem must be called prior to mymalloc and myfree.
@@ -235,14 +235,21 @@ void *WorstFit(size_t requested) {
     struct memoryList *current = head;
     // the pointer to the node that we're trying to find initialized as NULL
     struct memoryList *memoryListPtr = NULL;
-    // sets the remaining to 0 to make sure that the the first fit found is automatically the worst
-    int remaining = 0;
+    // sets the remaining to -1 to make sure that the first fit found is automatically the worst
+    int remaining = -1;
     // loops through the list
     while (current) {
         // checks if the memory block is big enough and is allocated
         if (current->size >= requested && current->alloc == 0) {
+//            if (debug) {
+//                printf("Memory block is big enough.\n%llu > %i = %i\n", ((long long) (current->size - requested)), remaining, ((long long) (current->size - requested)) > remaining);
+//            }
             // checks that if the current memory block is thw worst fit
-            if ((current->size - requested) > remaining) {
+            // we cast to long long, since https://stackoverflow.com/a/18247930 :')
+            if (((long long) (current->size - requested)) > remaining) {
+//                if (debug) {
+//                    printf("Memory block is the worst fit.\n");
+//                }
                 // calculates the new remaining
                 remaining = current->size - requested;
                 // sets the new memmoryListPtr
@@ -329,29 +336,29 @@ void myfree(void *block) {
         free(afterSearcher);
     }
     // checks if the previous is unallocated to combine with the current one
-    if ((searcher->last->alloc != 1) && (searcher->last != head)) {
-        // If the free is done to the head, we should not free previous, unless strategy is Next (wraparound)
-        if (!(searcher == head && myStrategy != Next)) {
-            // makes a next struct to be ready for merch later
-            struct memoryList *beforeSearcher = searcher->last;
-            // sets the before next  pointer to the searcher next pointer
-            beforeSearcher->next = searcher->next;
-            // makes sure that the one after beforeSearcher refers to searcher on the last.
-            beforeSearcher->next->last = beforeSearcher;
-            // adds the sizes together
-            beforeSearcher->size += searcher->size;
-
-            // if head or tail is searcher they are now pointing at searcher
-            if (searcher == head) {
-                head = beforeSearcher;
-            }
-            if (searcher == next) {
-                next = beforeSearcher;
-            }
-            // frees the Searcher
-            free(searcher);
-        }
-    }
+//    if ((searcher->last->alloc != 1) && (searcher->last != head)) {
+//        // If the free is done to the head, we should not free previous, unless strategy is Next (wraparound)
+//        if (!(searcher == head && myStrategy != Next)) {
+//            // makes a next struct to be ready for merch later
+//            struct memoryList *beforeSearcher = searcher->last;
+//            // sets the before next  pointer to the searcher next pointer
+//            beforeSearcher->next = searcher->next;
+//            // makes sure that the one after beforeSearcher refers to searcher on the last.
+//            beforeSearcher->next->last = beforeSearcher;
+//            // adds the sizes together
+//            beforeSearcher->size += searcher->size;
+//
+//            // if head or tail is searcher they are now pointing at searcher
+//            if (searcher == head) {
+//                head = beforeSearcher;
+//            }
+//            if (searcher == next) {
+//                next = beforeSearcher;
+//            }
+//            // frees the Searcher
+//            free(searcher);
+//        }
+//    }
 
     if (debug) {
         printf("Done freeing.\n\n");
@@ -377,7 +384,10 @@ int mem_holes() {
     while (searcher) {
         // if a black of memory is not allocated and the next space is (if it wasn't nothing would be allocate) and
         // then counts upwards
-        if (searcher->alloc == 0 && searcher->next->alloc == 1) counter++;
+        if (searcher->alloc == 0) {
+            // If we are at the tail, even though there is wrap, we count tail + head as separate
+            if ((searcher->next == head) || (searcher->next->alloc == 1)) counter++;
+        }
 
         // moves the searcher forward
         searcher = searcher->next;
@@ -460,14 +470,22 @@ int mem_small_free(int size) {
 }
 
 char mem_is_alloc(void *ptr) {
+    if (debug) {
+        printf("\n================================================\n");
+        printf("Checking if %p is allocated...\n\n", ptr);
+    }
     char allocated = 0;
     // the good old searcher node
     struct memoryList *searcher = head;
     // searches thorugh the linked list
     while (searcher) {
+        if (debug) {
+            printf("Ptr: %p\nSearcher:\n  Alloc: %i\n  Ptr: %p\nsearcher->ptr <= ptr: %i\nptr <= (searcher->size + searcher->ptr): %i\n\n", ptr, searcher->alloc, searcher->ptr, (searcher->ptr <= ptr), (ptr <= (searcher->size + searcher->ptr)));
+        }
+
         // check if the pointer greater than the searcher pointer and if the pointer + the size is then greater, than
         // the adress of the byte looking for
-        if (searcher->alloc == 1 && (searcher->ptr <= ptr) && (ptr <= (searcher->size + searcher->ptr))) {
+        if (searcher->alloc == 1 && (searcher->ptr <= ptr) && (ptr < (searcher->size + searcher->ptr))) {
             allocated = 1;
             break;
         }
@@ -475,6 +493,11 @@ char mem_is_alloc(void *ptr) {
         searcher = searcher->next;
         // breaks if searcher finds the head because circular linked list and stuff
         if (searcher == head) break;
+    }
+
+    if (debug) {
+        printf("%p allocation = %i.\n", ptr, allocated);
+        printf("================================================\n\n");
     }
 
     return allocated;

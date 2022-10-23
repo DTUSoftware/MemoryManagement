@@ -18,8 +18,7 @@ struct memoryList {
     struct memoryList *next;
 
     int size;            // How many bytes in this block?
-    char alloc;          // 1 if this block is allocated,
-    // 0 if this block is free.
+    char alloc;          // 1 if this block is allocated, 0 if this block is free.
     void *ptr;           // location of block in memory pool.
 };
 
@@ -56,7 +55,7 @@ void initmem(strategies strategy, size_t sz) {
     if (myMemory != NULL) free(myMemory); /* in case this is not the first time initmem2 is called */
 
     /* TODO: release any other memory you were using for bookkeeping when doing a re-initialization! */
-
+    if (head != NULL) free(head);
 
     myMemory = malloc(sz);
 
@@ -105,14 +104,15 @@ void *mymalloc(size_t requested) {
         default:
             return NULL;
     }
-    // should never get here, but just in case something went horribly wrong
+    // If the strategy could not find any available block for the requested size
     if (block == NULL) {
-        printf("Something horrible has happened (╯‵□′)╯︵┻━┻\n");
+        printf("Requested block not available!\n");
         return NULL;
     }
+
     // marks the block as allocated
-    block->size = 1;
-    // if the block size and the requested size maches we just move the next pointer, since there's no remaining
+    block->alloc = 1;
+    // if the block size and the requested size matches we just move the next pointer, since there's no remaining
     // memory in that fit
     if (block->size == requested) {
         // moves the next pointer

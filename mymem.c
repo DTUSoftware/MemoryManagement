@@ -330,24 +330,27 @@ void myfree(void *block) {
     }
     // checks if the previous is unallocated to combine with the current one
     if ((searcher->last->alloc != 1) && (searcher->last != head)) {
-        // makes a next struct to be ready for merch later
-        struct memoryList *beforeSearcher = searcher->last;
-        // sets the before next  pointer to the searcher next pointer
-        beforeSearcher->next = searcher->next;
-        // makes sure that the one after beforeSearcher refers to searcher on the last.
-        beforeSearcher->next->last = beforeSearcher;
-        // adds the sizes together
-        beforeSearcher->size += searcher->size;
+        // If the free is done to the head, we should not free previous, unless strategy is Next (wraparound)
+        if (!(searcher == head && myStrategy != Next)) {
+            // makes a next struct to be ready for merch later
+            struct memoryList *beforeSearcher = searcher->last;
+            // sets the before next  pointer to the searcher next pointer
+            beforeSearcher->next = searcher->next;
+            // makes sure that the one after beforeSearcher refers to searcher on the last.
+            beforeSearcher->next->last = beforeSearcher;
+            // adds the sizes together
+            beforeSearcher->size += searcher->size;
 
-        // if head or tail is searcher they are now pointing at searcher
-        if (searcher == head) {
-            head = beforeSearcher;
+            // if head or tail is searcher they are now pointing at searcher
+            if (searcher == head) {
+                head = beforeSearcher;
+            }
+            if (searcher == next) {
+                next = beforeSearcher;
+            }
+            // frees the Searcher
+            free(searcher);
         }
-        if (searcher == next) {
-            next = beforeSearcher;
-        }
-        // frees the Searcher
-        free(searcher);
     }
 
     if (debug) {

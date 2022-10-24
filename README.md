@@ -1,115 +1,106 @@
 # Memory Management
-62588 Operating Systems - Mandatory Assignment Memory Management
 
-The problem will focus on memory.  You will implement your own 
-version of malloc() and free(), using a variety of allocation strategies.
+_62588 Operating Systems - Mandatory Assignment: Memory Management_
 
-You will be implementing a memory manager for a block of memory.  You will
-implement routines for allocating and deallocating memory, and keeping track of
-what memory is in use.  You will implement the following four strategies for selecting in
-which block to place a new requested memory block:
+The problem will focus on memory.
+You will implement your own version of malloc() and free(), using a variety of allocation strategies.
 
-  1) First-fit: select the first suitable block with smallest address.
-  2) Best-fit: select the smallest suitable block.
-  3) Worst-fit: select the largest suitable block.
-  4) Next-fit: select the first suitable block after
-     the last block allocated (with wraparound
-     from end to beginning).
+You will be implementing a memory manager for a block of memory.
+You will implement routines for allocating and deallocating memory, and keeping track of what memory is in use.
+You will implement the following four strategies for selecting in which block to place a new requested memory block:
 
+1. **First-fit**:
+   Select the first suitable block with the smallest address.
+2. **Best-fit**:
+   Select the smallest suitable block.
+3. **Worst-fit**:
+   Select the largest suitable block.
+4. **Next-fit**:
+   Select the first suitable block after the last block allocated (with wraparound from end to beginning).
 
 Here, "suitable" means "free, and large enough to fit the new data".
 
+## Functions to implement
+
 Here are the functions you will need to implement:
 
-initmem():
-  Initialize memory structures.
+-   **initmem()**:
+    Initialize memory structures.
+-   **mymalloc()**:
+    Like malloc(), this allocates a new block of memory.
+-   **myfree()**:
+    Like free(), this deallocates a block of memory.
+-   **mem_holes()**:
+    How many free blocks are in memory?
+-   **mem_allocated()**:
+    How much memory is currently allocated?
+-   **mem_free()**:
+    How much memory is NOT allocated?
+-   **mem_largest_free()**:
+    How large is the largest free block?
+-   **mem_small_free()**:
+    How many small unallocated blocks are currently in memory?
+-   **mem_is_alloc()**:
+    Is a particular byte allocated or not?
 
-mymalloc():
-  Like malloc(), this allocates a new block of memory.
+A structure has been provided for use to implement these functions.
+It is a doubly-linked list of blocks in memory (both allocated and free blocks).
+Every malloc and free can create new blocks, or combine existing blocks.
+You may modify this structure, or even use a different one entirely.
+However, do not change function prototypes or files other than mymem.c.
 
-myfree():
-  Like free(), this deallocates a block of memory.
+**IMPORTANT NOTE:**
+**_Regardless of how you implement memory management, make sure that there are no adjacent free blocks.
+Any such blocks should be merged into one large block._**
 
-mem_holes():
-  How many free blocks are in memory?
+A few functions are given to help you monitor what happens when you call your functions.
+Most important is the **try_mymem()** function.
+If you run your code with `mem -try <args>`, it will call this function, which you can use to demonstrate the effects of
+your memory operations.
+These functions have no effect on test code, so use them to your advantage.
 
-mem_allocated():
-  How much memory is currently allocated?
+## Running the code
 
-mem_free():
-  How much memory is NOT allocated?
+After running `make`, run
 
-mem_largest_free():
-  How large is the largest free block?
+1. `mem` to see the available tests and strategies.
+2. `mem -test <test> <strategy>` to test your code with provided tests.
+3. `mem -try <args>` to run your code with your own tests (the try_mymem function).
 
-mem_small_free():
-  How many small unallocated blocks are currently in memory?
+You can also use `make test` and `make stage1-test` for testing. `make stage1-test` only runs the tests relevant to
+stage 1.
 
-mem_is_alloc():
-  Is a particular byte allocated or not?
+Running `mem -test -f0 ...` will allow tests to run even after previous tests have failed.
+Similarly, using "**all**" for a test or strategy name runs all of the tests or strategies.
+Note that if "**all**" is selected as the strategy, the 4 tests are shown as one.
 
-A structure has been provided for use to implement these functions.  It is a
-doubly-linked list of blocks in memory (both allocated and free blocks).  Every
-malloc and free can create new blocks, or combine existing blocks.  You may
-modify this structure, or even use a different one entirely.  However, do not
-change function prototypes or files other than mymem.c.
+One of the tests, "**stress**", runs an assortment of randomized tests on each strategy.
+The results of the tests are placed in **tests.out**.
+You may want to view this file to see the relative performance of each strategy.
 
-IMPORTANT NOTE: Regardless of how you implement memory management, make sure
-that there are no adjacent free blocks.  Any such blocks should be merged into
-one large block.
+## Project Stages
 
-A few functions are given to help you monitor what happens when you
-call your functions.  Most important is the try_mymem() function.  If you run
-your code with "mem -try <args>", it will call this function, which you can use
-to demonstrate the effects of your memory operations.  These functions have no
-effect on test code, so use them to your advantage.
+### Stage 1
 
-Running your code:
+Implement all the above functions, for all the 4 strategy in a group.
+Use `mem -test all first` to test your implementation.
 
-After running "make", run
+### Stage 2
 
-1) "mem" to see the available tests and strategies.
-2) "mem -test <test> <strategy>" to test your code with provided tests.
-3) "mem -try <args>" to run your code with your own tests
-   (the try_mymem function).
+You should answer the 10 questions asked below together in a group.
+The strategy is passed to initmem(), and stored in the global variable "**myStrategy**".
+Some of your functions will need to check this variable to implement the correct strategy.
 
-You can also use "make test" and "make stage1-test" for testing.  "make
-stage1-test" only runs the tests relevant to stage 1.
+You can test your code with `mem -test all worst`, etc., or test all 4 together with `mem -test all all`.
+The latter command does not test the strategies separately; your code passes the test only if all four strategies pass.
 
-Running "mem -test -f0 ..." will allow tests to run even
-after previous tests have failed.  Similarly, using "all" for a test or strategy
-name runs all of the tests or strategies.  Note that if "all" is selected as the
-strategy, the 4 tests are shown as one.
+## Questions
 
-One of the tests, "stress", runs an assortment of randomized tests on each
-strategy.  The results of the tests are placed in "tests.out" .  You may want to
-view this file to see the relative performance of each strategy.
+Answer the following questions as part of your report.
 
+1. **Why is it so important that adjacent free blocks not be left as such?**
 
-Stage 1
--------
-
-Implement all the above functions, for all the 4 strategy in a group
-Use "mem -test all first" to test your implementation
-
-
-Stage 2
--------
-you should answer the 10 questions asked below together in a group.
-The strategy is passed to initmem(), and stored in the global variable "myStrategy".
-Some of your functions will need to check this variable to implement the
-correct strategy.
-
-You can test your code with "mem -test all worst", etc., or test all 4 together
-with "mem -test all all".  The latter command does not test the strategies
-separately; your code passes the test only if all four strategies pass.
-
-
-Answer the following questions as part of your report
-=====================================================
-
-1) Why is it so important that adjacent free blocks not be left as such?  What
-would happen if they were permitted?
+    ANSWER
 
 It is important that adjacent free blocks are not left unattended because:
 When several programs have been allocated and deallocated, it will eventually
@@ -119,37 +110,59 @@ essentially end up with a bunch of unallocated blocs next to each other,
 and we won't be able to allocate memory that is bigger than a certain size,
 even though there is enough unallocated memory.
 
+**What would happen if they were permitted?**
 
-2) Which function(s) need to be concerned about adjacent free blocks?
+ANSWER
 
+2. **Which function(s) need to be concerned about adjacent free blocks?**
 
+    ANSWER
 
-3) Name one advantage of each strategy.
+3. Which function(s) need to be concerned about adjacent free blocks?
 
-4) Run the stress test on all strategies, and look at the results (tests.out).
-What is the significance of "Average largest free block"?  Which strategy
-generally has the best performance in this metric?  Why do you think this is?
+4. Name one advantage of each strategy.
 
-5) In the stress test results (see Question 4), what is the significance of
-"Average number of small blocks"?  Which strategy generally has the best
-performance in this metric?  Why do you think this is?
+5. Run the stress test on all strategies, and look at the results (tests.out).
 
-6) Eventually, the many mallocs and frees produces many small blocks scattered
-across the memory pool.  There may be enough space to allocate a new block, but
-not in one place.  It is possible to compact the memory, so all the free blocks
-are moved to one large free block.  How would you implement this in the system
-you have built?
+    **What is the significance of "Average largest free block"?**
 
-7) If you did implement memory compaction, what changes would you need to make
-in how such a system is invoked (i.e. from a user's perspective)?
+    ANSWER
 
-8) How would you use the system you have built to implement realloc?  (Brief
-explanation; no code)
+    **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-9) Which function(s) need to know which strategy is being used?  Briefly explain
-why this/these and not others.
+    ANSWER
 
-10) Give one advantage of implementing memory management using a linked list
-over a bit array, where every bit tells whether its corresponding byte is
-allocated.
+6. **In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?**
 
+    ANSWER
+
+    **Which strategy generally has the best performance in this metric? Why do you think this is?**
+
+    ANSWER
+
+7. Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool.
+   There may be enough space to allocate a new block, but not in one place.
+   It is possible to compact the memory, so all the free blocks are moved to one large free block.  
+   **How would you implement this in the system you have built?**
+
+    ANSWER
+
+8. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
+   (i.e. from a user's perspective)?**
+
+    ANSWER
+
+9. **How would you use the system you have built to implement realloc?**
+   (Brief explanation; no code)
+
+    ANSWER
+
+10. **Which function(s) need to know which strategy is being used?
+    Briefly explain why this/these and not others.**
+
+    ANSWER
+
+11. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
+    whether its corresponding byte is allocated.**
+
+    ANSWER

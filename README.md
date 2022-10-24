@@ -111,7 +111,18 @@ Answer the following questions as part of your report
 1) Why is it so important that adjacent free blocks not be left as such?  What
 would happen if they were permitted?
 
+It is important that adjacent free blocks are not left unattended because:
+When several programs have been allocated and deallocated, it will eventually
+leave gabs in the memory between the used memory. If the block to be freed
+is next to an unallocated block, and we don't combine them, then we will
+essentially end up with a bunch of unallocated blocs next to each other,
+and we won't be able to allocate memory that is bigger than a certain size,
+even though there is enough unallocated memory.
+
+
 2) Which function(s) need to be concerned about adjacent free blocks?
+
+
 
 3) Name one advantage of each strategy.
 

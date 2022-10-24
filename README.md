@@ -101,39 +101,35 @@ Answer the following questions as part of your report.
 1. **Why is it so important that adjacent free blocks not be left as such?**
    **What would happen if they were permitted?**
 
-
-    ANSWER
-It is important that adjacent free blocks are not left unattended because:
-When several programs have been allocated and deallocated, it will eventually
-leave gabs in the memory between the used memory. If the block to be freed
-is next to an unallocated block, and we don't combine them, then we will
-essentially end up with a bunch of unallocated blocs next to each other,
-and we won't be able to allocate memory that is bigger than a certain size,
-even though there is enough unallocated memory.
+    It is important that adjacent free blocks are not left unattended because:
+    When several programs have been allocated and deallocated, it will eventually
+    leave gabs in the memory between the used memory. If the block to be freed
+    is next to an unallocated block, and we don't combine them, then we will
+    essentially end up with a bunch of unallocated blocs next to each other,
+    and we won't be able to allocate memory that is bigger than a certain size,
+    even though there is enough unallocated memory.
 
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
-    
     ANSWER
 3. **Name one advantage of each strategy.**
 
-**First Fit**
+    **First Fit**
+    The advantage of first fit is that it is quite fast, since when it 
+    finds the first fit it instantly allocates the memory, and it's quite
+    simple to implement
 
+    **Best Fit**  
+    The advantage of best fit is that it will use the memory block which
+    is closest to the memory needed, so there will be as little as possible
+    remaining memory in that block.
 
+    **Worst Fit**  
+    The advantage of 
+
+    **Next Fit**  
     ANSWER
-**Best Fit**
 
-
-    ANSWER
-
-**Worst Fit**
-
-
-    ANSWER
-**Next Fit**
-
-
-    ANSWER
 4. **Run the stress test on all strategies, and look at the results (tests.out).**
 
    **What is the significance of "Average largest free block"?**
@@ -167,13 +163,17 @@ even though there is enough unallocated memory.
 8. **How would you use the system you have built to implement realloc?**
    (Brief explanation; no code)
 
+
    ANSWER
+
 9. **Which function(s) need to know which strategy is being used?
    Briefly explain why this/these and not others.**
 
-   ANSWER
+    
+    ANSWER
 
 10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
     whether its corresponding byte is allocated.**
+
 
     ANSWER

@@ -8,10 +8,10 @@ OBJECTS=testrunner.o mymem.o memorytests.o
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CC) $(LINKOPTS) -o $@ $^
+	$(CC) $(LINKOPTS) -c -O2 $@ $^
 
 %.o:%.c
-	$(CC) $(CCOPTS) -o $@ $^
+	$(CC) $(CCOPTS) -c -O2 $@ $^
 
 clean:
 	- $(RM) $(EXEC)

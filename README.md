@@ -24,24 +24,24 @@ Here, "suitable" means "free, and large enough to fit the new data".
 
 Here are the functions you will need to implement:
 
--   **initmem()**:
-    Initialize memory structures.
--   **mymalloc()**:
-    Like malloc(), this allocates a new block of memory.
--   **myfree()**:
-    Like free(), this deallocates a block of memory.
--   **mem_holes()**:
-    How many free blocks are in memory?
--   **mem_allocated()**:
-    How much memory is currently allocated?
--   **mem_free()**:
-    How much memory is NOT allocated?
--   **mem_largest_free()**:
-    How large is the largest free block?
--   **mem_small_free()**:
-    How many small unallocated blocks are currently in memory?
--   **mem_is_alloc()**:
-    Is a particular byte allocated or not?
+- **initmem()**:
+  Initialize memory structures.
+- **mymalloc()**:
+  Like malloc(), this allocates a new block of memory.
+- **myfree()**:
+  Like free(), this deallocates a block of memory.
+- **mem_holes()**:
+  How many free blocks are in memory?
+- **mem_allocated()**:
+  How much memory is currently allocated?
+- **mem_free()**:
+  How much memory is NOT allocated?
+- **mem_largest_free()**:
+  How large is the largest free block?
+- **mem_small_free()**:
+  How many small unallocated blocks are currently in memory?
+- **mem_is_alloc()**:
+  Is a particular byte allocated or not?
 
 A structure has been provided for use to implement these functions.
 It is a doubly-linked list of blocks in memory (both allocated and free blocks).
@@ -99,8 +99,9 @@ The latter command does not test the strategies separately; your code passes the
 Answer the following questions as part of your report.
 
 1. **Why is it so important that adjacent free blocks not be left as such?**
+   **What would happen if they were permitted?**
 
-    ANSWER
+       ANSWER
 
 It is important that adjacent free blocks are not left unattended because:
 When several programs have been allocated and deallocated, it will eventually
@@ -110,59 +111,52 @@ essentially end up with a bunch of unallocated blocs next to each other,
 and we won't be able to allocate memory that is bigger than a certain size,
 even though there is enough unallocated memory.
 
-**What would happen if they were permitted?**
-
-ANSWER
-
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
-    ANSWER
+   ANSWER
 
-3. Which function(s) need to be concerned about adjacent free blocks?
+3. **Name one advantage of each strategy.**
 
-4. Name one advantage of each strategy.
+4. **Run the stress test on all strategies, and look at the results (tests.out).**
 
-5. Run the stress test on all strategies, and look at the results (tests.out).
+   **What is the significance of "Average largest free block"?**
 
-    **What is the significance of "Average largest free block"?**
+   ANSWER
 
-    ANSWER
+   **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-    **Which strategy generally has the best performance in this metric? Why do you think this is?**
+   ANSWER
 
-    ANSWER
+5. **In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?**
 
-6. **In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?**
+   ANSWER
 
-    ANSWER
+   **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-    **Which strategy generally has the best performance in this metric? Why do you think this is?**
+   ANSWER
 
-    ANSWER
-
-7. Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool.
+6. Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool.
    There may be enough space to allocate a new block, but not in one place.
    It is possible to compact the memory, so all the free blocks are moved to one large free block.  
    **How would you implement this in the system you have built?**
 
-    ANSWER
+   ANSWER
 
-8. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
+7. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
    (i.e. from a user's perspective)?**
 
-    ANSWER
+   ANSWER
 
-9. **How would you use the system you have built to implement realloc?**
+8. **How would you use the system you have built to implement realloc?**
    (Brief explanation; no code)
 
-    ANSWER
+   ANSWER
+9. **Which function(s) need to know which strategy is being used?
+   Briefly explain why this/these and not others.**
 
-10. **Which function(s) need to know which strategy is being used?
-    Briefly explain why this/these and not others.**
+   ANSWER
 
-    ANSWER
-
-11. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
+10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
     whether its corresponding byte is allocated.**
 
     ANSWER

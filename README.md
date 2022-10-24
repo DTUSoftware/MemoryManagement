@@ -101,8 +101,8 @@ Answer the following questions as part of your report.
 1. **Why is it so important that adjacent free blocks not be left as such?**
    **What would happen if they were permitted?**
 
-       ANSWER
 
+    ANSWER
 It is important that adjacent free blocks are not left unattended because:
 When several programs have been allocated and deallocated, it will eventually
 leave gabs in the memory between the used memory. If the block to be freed
@@ -113,10 +113,27 @@ even though there is enough unallocated memory.
 
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
-   ANSWER
-
+    
+    ANSWER
 3. **Name one advantage of each strategy.**
 
+**First Fit**
+
+
+    ANSWER
+**Best Fit**
+
+
+    ANSWER
+
+**Worst Fit**
+
+
+    ANSWER
+**Next Fit**
+
+
+    ANSWER
 4. **Run the stress test on all strategies, and look at the results (tests.out).**
 
    **What is the significance of "Average largest free block"?**

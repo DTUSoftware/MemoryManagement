@@ -62,7 +62,19 @@ void initmem(strategies strategy, size_t sz) {
     if (myMemory != NULL) free(myMemory); /* in case this is not the first time initmem2 is called */
 
     /* TODO: release any other memory you were using for bookkeeping when doing a re-initialization! */
+//    struct memoryList *searcher = head;
+//    while (searcher) {
+//        struct memoryList *beforeSearcher = searcher;
+//        searcher = searcher->next;
+//        if (beforeSearcher != NULL) free(beforeSearcher);
+
+
+//        if (searcher == head) break;
+//    }
+
     if (head != NULL) free(head);
+//    if (searcher != NULL) free(searcher);
+
 
     myMemory = malloc(sz);
 
@@ -479,7 +491,9 @@ char mem_is_alloc(void *ptr) {
     // searches thorugh the linked list
     while (searcher) {
         if (debug) {
-            printf("Ptr: %p\nSearcher:\n  Alloc: %i\n  Ptr: %p\nsearcher->ptr <= ptr: %i\nptr <= (searcher->size + searcher->ptr): %i\n\n", ptr, searcher->alloc, searcher->ptr, (searcher->ptr <= ptr), (ptr <= (searcher->size + searcher->ptr)));
+            printf("Ptr: %p\nSearcher:\n  Alloc: %i\n  Ptr: %p\nsearcher->ptr <= ptr: %i\nptr <= (searcher->size + searcher->ptr): %i\n\n",
+                   ptr, searcher->alloc, searcher->ptr, (searcher->ptr <= ptr),
+                   (ptr <= (searcher->size + searcher->ptr)));
         }
 
         // check if the pointer greater than the searcher pointer and if the pointer + the size is then greater, than
@@ -560,7 +574,7 @@ strategies strategyFromString(char *strategy) {
 void print_memory() {
     struct memoryList *searcher = head;
     while (searcher) {
-        char* allocated = searcher->alloc ? "true " : "false";
+        char *allocated = searcher->alloc ? "true " : "false";
         printf("[%p] Allocated: %s | Size: %i\n", searcher->ptr, allocated, searcher->size);
         searcher = searcher->next;
 

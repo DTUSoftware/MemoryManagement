@@ -126,27 +126,27 @@ Answer the following questions as part of your report.
     remaining memory in that block.
 
     ***Worst Fit***:  
-    The advantage of 
+    The advantage of worst fit is that it will alaways allocate the the largest block, so there won't be a lot of big unused memory blocks
 
     ***Next Fit***:  
-    The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since it doesn't have to run through the entire linked list, but only the 
+    The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since it doesn't have to run through the entire linked list, but only find the fit after the next. But compared to first fit that will allocate at the start if it can, next fit will allocate throughout and start after where the last one was allocated
 
 4. **Run the stress test on all strategies, and look at the results (tests.out).
    What is the significance of "Average largest free block"?**
 
-   ANSWER
+   The significanse of Average largest free block, is that if there is a large block avaible it will be easier to allocate a big block of memory and there should be less failed allocations
 
    **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-   ANSWER
+   Best fit has the best performance in this metric, since it will try to use the smallest block of memory possible, the bigger blocs will be left for last.
 
 5. **In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?**
 
-   ANSWER
+   The significanse is that, a lot of small blocs can be hard to allocate, since they might be too small for the allocation, and a lot of small blocks will take a long time to compact.
 
    **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-   ANSWER
+   Worst fit has the best performance in this metric, since it doesn't have a lot of small blocs. This makes sense since worst fit will always allocate the largest block and thereby the block of unused memory will always be as large as possible.
 
 6. Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool.
    There may be enough space to allocate a new block, but not in one place.
@@ -170,7 +170,5 @@ Answer the following questions as part of your report.
 
     ANSWER
 
-10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
-    whether its corresponding byte is allocated.**
+10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells whether its corresponding byte is allocated.**  
 
-    ANSWER

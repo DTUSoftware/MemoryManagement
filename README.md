@@ -112,27 +112,27 @@ Answer the following questions as part of your report.
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
     ANSWER
+
 3. **Name one advantage of each strategy.**
 
-    **First Fit**
+    ***First Fit***:  
     The advantage of first fit is that it is quite fast, since when it 
     finds the first fit it instantly allocates the memory, and it's quite
     simple to implement
 
-    **Best Fit**  
+    ***Best Fit***:  
     The advantage of best fit is that it will use the memory block which
     is closest to the memory needed, so there will be as little as possible
     remaining memory in that block.
 
-    **Worst Fit**  
+    ***Worst Fit***:  
     The advantage of 
 
-    **Next Fit**  
+    ***Next Fit***:  
     The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since it doesn't have to run through the entire linked list, but only the 
 
-4. **Run the stress test on all strategies, and look at the results (tests.out).**
-
-   **What is the significance of "Average largest free block"?**
+4. **Run the stress test on all strategies, and look at the results (tests.out).
+   What is the significance of "Average largest free block"?**
 
    ANSWER
 
@@ -163,17 +163,14 @@ Answer the following questions as part of your report.
 8. **How would you use the system you have built to implement realloc?**
    (Brief explanation; no code)
 
-
    ANSWER
 
 9. **Which function(s) need to know which strategy is being used?
    Briefly explain why this/these and not others.**
 
-    
     ANSWER
 
 10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells
     whether its corresponding byte is allocated.**
-
 
     ANSWER

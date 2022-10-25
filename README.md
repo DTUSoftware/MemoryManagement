@@ -111,7 +111,8 @@ Answer the following questions as part of your report.
 
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
-    ANSWER
+   ***myfree(void \*block)*** needs to be concerned about adjacent free blocks in order to properly merge adjacent free blocks together when freeing.
+   The other functions doesn't need to be concerned about adjacent free blocks, since they should be merged together by ***myfree(void \*block)***.
 
 3. **Name one advantage of each strategy.**
 
@@ -153,17 +154,23 @@ Answer the following questions as part of your report.
    It is possible to compact the memory, so all the free blocks are moved to one large free block.  
    **How would you implement this in the system you have built?**
 
-   ANSWER
+   We will presume that there exists one large free block in the memory pool, which is large enough to fit all of the current allocated memory.  
+   We would then start out by checking our memory pool, starting at the head, looking for the biggest free block of memory (like Worst-Fit).  
+   We would then start at the head again, going through our memory pool, and at every allocated block of memory, reallocate it to the largest free block, and be sure to either move our "largest free block" pointer to the free memory block which was left after allocating our memory, or keeping track of the current size added to the free memory block (in order to add this to the pointer, in order to reallocate the next allocated memory block in our memory pool).  We perform the reallocation by first allocating the memory to the largest free block, and then freeing the original memory.  
+   This procedure stops when we reach the point of the first original memory's new position in the memory pool (so we don't just keep on reallocating).
 
 7. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
    (i.e. from a user's perspective)?**
 
-   ANSWER
+   Ideally the user would not know nor notice that memory compaction was implemented, but it would take up quite a bit of CPU-load to perform the compaction, in terms of IO, etc..  
+   Because of this, you would either run it as a manual "garbage collection" task invoked by the user, or you could perform the compaction only when it is needed (i.e. trying to allocate a big program which does not fit into any current free block, but there is enough free memory in total in the memory pool), or you could perform the compaction when the user is not busy performing other actions (use idle-time to make future actions more effecient instead of wasting idle-time) and stop the compaction when the user resumes activity, and you could actually make a mix of all of them.
 
 8. **How would you use the system you have built to implement realloc?**
    (Brief explanation; no code)
 
-   ANSWER
+   Realloc is be relatively easy if you have adjacent memory on the "right side" of the current memory, big enough to hold the desired amount of memory. You would then simply "decrease" the size of the adjacent free block and move its pointer, and increase the size of the memory block you are trying to reallocate.
+
+   If that is not possible, you would have to call malloc with new requested size, and then you write the old data to the newly allocated block, and then you free your old block of memory, after moving the pointer to the new block of memory.
 
 9. **Which function(s) need to know which strategy is being used?
    Briefly explain why this/these and not others.**

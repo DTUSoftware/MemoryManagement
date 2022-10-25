@@ -61,20 +61,22 @@ void initmem(strategies strategy, size_t sz) {
 
     if (myMemory != NULL) free(myMemory); /* in case this is not the first time initmem2 is called */
 
-    /* TODO: release any other memory you were using for bookkeeping when doing a re-initialization! */
-//    struct memoryList *searcher = head;
-//    while (searcher) {
-//        struct memoryList *beforeSearcher = searcher;
-//        searcher = searcher->next;
-//        if (beforeSearcher != NULL) free(beforeSearcher);
+    /* Release any other memory you were using for bookkeeping when doing a re-initialization! */
+    struct memoryList *searcher = head;
+    while (searcher != NULL) {
+        struct memoryList *current = searcher;
+        current->last->next = current->next;
+        searcher = searcher->next;
+        searcher->last = current->last;
 
-
-//        if (searcher == head) break;
-//    }
-
-    if (head != NULL) free(head);
-//    if (searcher != NULL) free(searcher);
-
+        if (searcher == searcher->last && searcher == searcher->next) {
+            free(current);
+            searcher = NULL;
+            head = NULL;
+            break;
+        }
+        free(current);
+    }
 
     myMemory = malloc(sz);
 

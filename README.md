@@ -175,7 +175,8 @@ Answer the following questions as part of your report.
 9. **Which function(s) need to know which strategy is being used?
    Briefly explain why this/these and not others.**
 
-    ANSWER
+   Only ***mymalloc(size_t requested)*** needs to know which strategy is being used, in order to pick the currect block of memory, in accordance to the strategy specifications. Technically, ***initmem*** also "requires" to know the strategy being used, in order to adjust the global variable, which ***mymalloc(size_t requested)*** uses.
 
 10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells whether its corresponding byte is allocated.**  
 
+    ANSWER

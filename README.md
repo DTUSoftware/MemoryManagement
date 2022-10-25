@@ -128,7 +128,7 @@ Answer the following questions as part of your report.
     The advantage of 
 
     **Next Fit**  
-    The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since 
+    The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since it doesn't have to run through the entire linked list, but only the 
 
 4. **Run the stress test on all strategies, and look at the results (tests.out).**
 

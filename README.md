@@ -176,4 +176,4 @@ Answer the following questions as part of your report.
 
 10. **Give one advantage of implementing memory management using a linked list over a bit array, where every bit tells whether its corresponding byte is allocated.**  
 
-    Using a linked list the number of elements/blocks does not have to be predefined, and you can change the size of blocks without risk of data overflowing.
+    Using a linked list the number of elements/blocks does not have to be predefined, and you can change the size of blocks without risk of data overflowing. Link list should also make the process run faster since it can make bigger jumps, where a bit array you would have to iterate over every bit in an allocated block to find an unallocated, where in a linked list you just go from allocated to unallocated in possibly one jump.

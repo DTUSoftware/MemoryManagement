@@ -100,8 +100,8 @@ Answer the following questions as part of your report.
    It is important that adjacent free blocks are not left unattended because:
    When several programs have been allocated and deallocated, it will eventually leave gabs in the memory between the
    used memory. If the block to be freed is next to an unallocated block, and we don't combine them, then we will
-   essentially end up with a bunch of unallocated blocs next to each other, and we won't be able to allocate memory that
-   is bigger than a certain size, even though there is enough unallocated memory.
+   essentially end up with a bunch of unallocated blocks next to each other, and we won't be able to allocate memory
+   that is bigger than a certain size, even though there is enough unallocated memory.
 
 2. **Which function(s) need to be concerned about adjacent free blocks?**
 
@@ -113,43 +113,45 @@ Answer the following questions as part of your report.
 
    ***First Fit***:  
    The advantage of first fit is that it is quite fast, since when it finds the first fit it instantly allocates the
-   memory, and it's quite simple to implement
+   memory, and it's quite simple to implement.
 
    ***Best Fit***:  
    The advantage of best fit is that it will use the memory block which is closest to the memory needed, so there will
-   be as little as possible remaining memory in that block.
+   be as little as possible remaining memory in that block. Reduce wasted space in the memory pool.
 
    ***Worst Fit***:  
    The advantage of worst fit is that it will alaways allocate the the largest block, so there won't be a lot of big
-   unused memory blocks
+   unused memory blocks - less small holes.
 
    ***Next Fit***:  
    The advantage of next fit is the same as first fit, that it will be quite fast at allocating the memory since it
    doesn't have to run through the entire linked list, but only find the fit after the next. But compared to first fit
    that will allocate at the start if it can, next fit will allocate throughout and start after where the last one was
-   allocated
+   allocated, leaving a more evenly distributed memory pool.  
+   In certain circimstances, for example if you are allocating a lot of blocks, with Next Fit, you do not have to go
+   through all of the memory that you just allocated, but just start off from where you currently are.
 
 4. **Run the stress test on all strategies, and look at the results (tests.out). What is the significance of "Average
    largest free block"?**
 
    The significanse of Average largest free block, is that if there is a large block avaible it will be easier to
-   allocate a big block of memory and there should be less failed allocations
+   allocate a big block of memory, and there should generally be less failed allocations.
 
    **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-   Best fit has the best performance in this metric, since it will try to use the smallest block of memory possible, the
-   bigger blocs will be left for last.
+   Best fit has the "best performance" in this metric, since it will try to use the smallest block of memory possible,
+   the bigger blocks will be left for last.
 
 5. **In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?**
 
-   The significanse is that, a lot of small blocs can be hard to allocate, since they might be too small for the
-   allocation, and a lot of small blocks will take a long time to compact.
+   The significanse is that, a lot of small blocks can be hard to allocate, since they might be too small for
+   allocation, and a lot of small blocks will take a longer time to compact.
 
    **Which strategy generally has the best performance in this metric? Why do you think this is?**
 
-   Worst fit has the best performance in this metric, since it doesn't have a lot of small blocs. This makes sense since
-   worst fit will always allocate the largest block and thereby the block of unused memory will always be as large as
-   possible.
+   Worst fit has the "best performance" in this metric, since it doesn't have a lot of small blocks. This makes sense
+   since worst fit will always allocate the largest block and thereby the block of unused memory will always be as large
+   as possible.
 
 6. Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool. There may be
    enough space to allocate a new block, but not in one place. It is possible to compact the memory, so all the free
@@ -158,7 +160,10 @@ Answer the following questions as part of your report.
 
    Because the system is built using a doubly linked list, you can either move all of the free blocks to the end of the
    memory pool, and merge them together into one large block one-by-one, or you can free each of the free memory blocks,
-   keep the size, and create a new block at the end of the memory pool with the size of all the freed memory blocks.
+   keep the size, and create a new block at the end of the memory pool with the size of all the freed memory blocks.  
+   The problem with performing the compaction in this way, is that your pointers to the memory would have to be changed.
+   If you would like to keep your memory pointers intact, you would instead have to relocate all of the current
+   allocated memory, by performing a bunch of malloc and freeing.
 
 7. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
    (i.e. from a user's perspective)?**
@@ -195,4 +200,5 @@ Answer the following questions as part of your report.
     Using a linked list the number of elements/blocks does not have to be predefined, and you can change the size of
     blocks without risk of data overflowing. Link list should also make the process run faster since it can make bigger
     jumps, where a bit array you would have to iterate over every bit in an allocated block to find an unallocated,
-    where in a linked list you just go from allocated to unallocated in possibly one jump.
+    since it's harder to determine the size of the blocks, where in a linked list you just go from allocated to
+    unallocated in possibly one jump.

@@ -154,10 +154,7 @@ Answer the following questions as part of your report.
    It is possible to compact the memory, so all the free blocks are moved to one large free block.  
    **How would you implement this in the system you have built?**
 
-   We will presume that there exists one large free block in the memory pool, which is large enough to fit all of the current allocated memory.  
-   We would then start out by checking our memory pool, starting at the head, looking for the biggest free block of memory (like Worst-Fit).  
-   We would then start at the head again, going through our memory pool, and at every allocated block of memory, reallocate it to the largest free block, and be sure to either move our "largest free block" pointer to the free memory block which was left after allocating our memory, or keeping track of the current size added to the free memory block (in order to add this to the pointer, in order to reallocate the next allocated memory block in our memory pool).  We perform the reallocation by first allocating the memory to the largest free block, and then freeing the original memory.  
-   This procedure stops when we reach the point of the first original memory's new position in the memory pool (so we don't just keep on reallocating).
+   Because the system is built using a doubly linked list, you can either move all of the free blocks to the end of the memory pool, and merge them together into one large block one-by-one, or you can free each of the free memory blocks, keep the size, and create a new block at the end of the memory pool with the size of all the freed memory blocks.
 
 7. **If you did implement memory compaction, what changes would you need to make in how such a system is invoked
    (i.e. from a user's perspective)?**

@@ -1,6 +1,6 @@
 CC = gcc
-CCOPTS = -c -g -Wall
-LINKOPTS = -g -lrt 
+CCOPTS = -c -O2 -g -Wall -Wextra
+LINKOPTS = -O2 -g -Wall -Wextra
 
 EXEC=mem
 OBJECTS=testrunner.o mymem.o memorytests.o
@@ -8,10 +8,10 @@ OBJECTS=testrunner.o mymem.o memorytests.o
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CC) $(LINKOPTS) -c -O2 $@ $^
+	$(CC) $(LINKOPTS) -o  $@ $^
 
 %.o:%.c
-	$(CC) $(CCOPTS) -c -O2 $@ $^
+	$(CC) $(CCOPTS) -o $@ $^
 
 clean:
 	- $(RM) $(EXEC)
@@ -20,10 +20,10 @@ clean:
 	- $(RM) core.*
 
 test: mem
-	mem -test -f0 all all
+	./$(EXEC) -test -f0 all all
 
 stage1-test: mem
-	mem -test -f0 all first
+	./$(EXEC) -test -f0 all first
 
 pretty: 
 	indent *.c *.h -kr
